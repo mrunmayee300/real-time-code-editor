@@ -64,3 +64,44 @@ editor/
 5. Open the Vite URL (default `http://localhost:5173`) and create or join a room.
 
 Copy `server/.env` from a template: `PORT`, `MONGO_URI`, `CLIENT_URL`, `RAPIDAPI_KEY`.
+
+---
+
+## Deployment
+
+Deploy the **API** and **static frontend** separately. Use **MongoDB Atlas** for production.
+
+### Backend (e.g. Render, Railway, Fly.io)
+
+1. Create a Web Service; **root directory** `server`.
+2. **Build:** `npm install && npm run build`
+3. **Start:** `npm start` (runs `node dist/index.js`)
+4. **Environment variables:**
+
+   | Variable        | Description                          |
+   | --------------- | ------------------------------------ |
+   | `MONGO_URI`     | Atlas connection string              |
+   | `RAPIDAPI_KEY`  | RapidAPI key for Judge0 CE           |
+   | `PORT`          | Usually set by the host (e.g. Render) |
+
+5. The server listens on `0.0.0.0` and the URL you get (e.g. `https://…onrender.com`) is your **API base URL**.
+
+### Frontend (e.g. Vercel, Netlify, Cloudflare Pages)
+
+1. **Root directory** `client`.
+2. **Build:** `npm install && npm run build`
+3. **Output directory:** `dist`
+4. **API URL at build time** — either:
+   - Set **`VITE_BACKEND_URL`** in the host’s env (Vercel → Settings → Environment Variables), **or**
+   - Edit **`client/.env.production`** (tracked in git) to your API origin, no trailing slash.
+
+5. Redeploy after changing the API URL.
+
+6. Socket.io and `/execute` must target the **Render (or other) API**, not the Vercel domain — otherwise `wss://…vercel.app/socket.io` will fail.
+
+### Local vs production
+
+- **Local:** leave `VITE_BACKEND_URL` unset in `client/.env` so Vite proxies to `localhost:3001`.
+- **Production:** `client/.env.production` supplies `VITE_BACKEND_URL` for `vite build`, or override with the host’s env.
+
+See `client/.env.example`.

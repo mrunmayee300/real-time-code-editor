@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { debounce } from "../services/debounce";
 import type { Op } from "../services/ot";
 import { applyOp } from "../services/ot";
+import { getBackendUrl } from "../services/apiBase";
 import { getSocket } from "../services/socket";
 
 type Props = {
@@ -24,7 +25,8 @@ export function CollabEditor({ roomId, clientId }: Props) {
     setRunning(true);
     setRunOut("");
     try {
-      const res = await fetch("/execute", {
+      const base = getBackendUrl();
+      const res = await fetch(`${base}/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ source_code: code, language: "python" }),

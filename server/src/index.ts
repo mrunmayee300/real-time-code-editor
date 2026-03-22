@@ -28,7 +28,7 @@ registerCollab(io);
 
 async function main() {
   await mongoose.connect(MONGO_URI);
-  httpServer.listen(PORT, () => {
+  httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`server ${PORT}`);
   });
 }
